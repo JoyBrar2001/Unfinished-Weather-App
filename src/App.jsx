@@ -5,6 +5,8 @@ import Time_Location from './components/Time_Location'
 import Temperature_Details from './components/Temperature_Details'
 import Forecast from './components/Forecast'
 import getFormattedWeatherData from './services/weatherService'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
 
@@ -14,7 +16,13 @@ const App = () => {
 
   useEffect(() => {
     const fetchWeather = async () => {
-      await getFormattedWeatherData({ ...query, units }).then(data => setWeather(data))
+      const message = query.q ? query.q : 'current location'
+      toast.info('Fetching Weather for ' + message)
+
+      await getFormattedWeatherData({ ...query, units }).then(data => {
+        toast.success(`Successfully fetched weather for ${data.name}, ${data.country}`)
+        setWeather(data)
+      })
 
     }
     fetchWeather()
@@ -45,6 +53,8 @@ const App = () => {
           <Forecast title="Daily Forecase" />
         </div>
       )}
+
+      <ToastContainer autoClose={5000} theme='colored' newestOnTop={true} />
 
     </div>
   )
